@@ -1,0 +1,10 @@
+.site_logo {
+    background-image: url("./images/site_logo.png");
+    background-size: 100px;
+}
+
+.site_logo {
+	display: inline-block;
+	width: 100px;
+	height: 100px;
+}
