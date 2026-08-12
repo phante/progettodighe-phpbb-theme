@@ -1,0 +1,5 @@
+# <versione phpBB> <tag immagine php>
+# La prima riga riproduce la produzione, le altre sono i salti di versione da
+# verificare prima di farli sul server.
+3.3.10 8.1-apache
+3.3.17 8.3-apache

@@ -1,0 +1,10 @@
+node_modules/
+test-results/
+playwright-report/
+# Pacchetti phpBB/lingua scaricati a mano (Cloudflare blocca il download automatico).
+test/pkg/*.zip
+# Strumenti locali di sviluppo: non fanno parte del tema.
+.serena/
+.claude/
+.headroom/
+.DS_Store

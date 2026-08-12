@@ -1,0 +1,39 @@
+# Ambiente di test usa-e-getta per il tema. Nessun volume persistente: il
+# database vive in tmpfs e l'installazione si rifà da test/bin/install.sh.
+#
+#   PHPBB_VERSION=3.3.10 PHP_TAG=8.1-apache podman-compose -f test/compose.yml up --build -d
+#
+# La porta si sposta con PHPBB_PORT, che va tenuta d'accordo con PD_BASE_URL.
+services:
+  db:
+    image: docker.io/library/mariadb:11
+    environment:
+      MARIADB_ROOT_PASSWORD: phpbb
+      MARIADB_DATABASE: phpbb
+      MARIADB_USER: phpbb
+      MARIADB_PASSWORD: phpbb
+    tmpfs:
+      - /var/lib/mysql
+    healthcheck:
+      test: ["CMD", "healthcheck.sh", "--connect", "--innodb_initialized"]
+      interval: 3s
+      timeout: 3s
+      retries: 20
+
+  phpbb:
+    build:
+      context: .
+      dockerfile: Containerfile
+      args:
+        PHPBB_VERSION: ${PHPBB_VERSION:-3.3.10}
+        PHP_TAG: ${PHP_TAG:-8.1-apache}
+    ports:
+      - "${PHPBB_PORT:-8080}:80"
+    volumes:
+      # Il tema è montato dal sorgente, come child style di prosilver: si
+      # modifica e si ricarica (load_tplcompile è on nell'install), senza rebuild.
+      # Il nome della directory è lo style_path che install.sh registra nel DB.
+      - ../:/var/www/html/styles/progettodighe-phpbb-theme:ro,z
+    depends_on:
+      db:
+        condition: service_healthy

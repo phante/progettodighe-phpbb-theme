@@ -1,0 +1,29 @@
+ARG PHP_TAG=8.1-apache
+FROM docker.io/library/php:${PHP_TAG}
+
+ARG PHPBB_VERSION=3.3.10
+
+RUN apt-get update \
+    && apt-get install -y --no-install-recommends \
+       libpng-dev libjpeg62-turbo-dev libfreetype6-dev libonig-dev libzip-dev default-mysql-client unzip \
+    && docker-php-ext-configure gd --with-freetype --with-jpeg \
+    && docker-php-ext-install -j"$(nproc)" gd mysqli mbstring zip \
+    && rm -rf /var/lib/apt/lists/*
+
+# Il pacchetto non si scarica nel build: download.phpbb.com è dietro una sfida JS
+# di Cloudflare che un client non-browser non passa. Va messo a mano in test/pkg/
+# (vedi README), esattamente come il repo progettodighe-server fa per l'upgrade.
+#
+# Lo zip ufficiale scompatta in phpBB3/, da cui prendiamo solo il contenuto:
+# phpBB vuole stare nella document root.
+COPY pkg/phpBB-${PHPBB_VERSION}.zip /tmp/phpbb.zip
+RUN unzip -q /tmp/phpbb.zip -d /tmp \
+    && cp -a /tmp/phpBB3/. /var/www/html/ \
+    && rm -rf /tmp/phpbb.zip /tmp/phpBB3 \
+    && chown -R www-data:www-data /var/www/html
+
+# ponytail: ambiente usa-e-getta, 777 sulle directory scrivibili e sulla root
+# (l'installer CLI ci scrive config.php) invece di inseguire gli uid del
+# bind-mount di podman.
+RUN chmod 777 /var/www/html /var/www/html/cache /var/www/html/store /var/www/html/files \
+    /var/www/html/images/avatars/upload 2>/dev/null || true

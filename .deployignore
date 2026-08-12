@@ -1,0 +1,11 @@
+.git/
+.gitignore
+.deployignore
+node_modules/
+test/
+test-results/
+playwright-report/
+package.json
+package-lock.json
+playwright.config.js
+README.md
