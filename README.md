@@ -86,18 +86,33 @@ Prima di aggiornare il server: `npm run test:matrix` verde.
 
 ## Pubblicazione
 
-Oggi il tema è ancora un `git pull` del repo dentro
-`styles/progettodighe-phpbb-theme/`; l'upgrade di phpBB lo preserva perché i
-playbook escludono `styles/`. Il passaggio al deploy Ansible — sul modello di
-`deploy_gallery_theme.yaml` della gallery — è un task aperto in
-`progettodighe-server/TODO.md`.
+La pubblica Ansible, dal repo `progettodighe-server`. Un solo branch `main`;
+l'ambiente lo sceglie una variabile (`main` su dev, un tag annotato in
+produzione), non un branch. Il tema è statico, quindi non c'è niente da
+costruire: Ansible clona il repo, ne fa `rsync` nella directory dello style
+escludendo quanto elencato in `.deployignore`, e poi butta via il clone — così
+la `.git` non entra mai nella directory servita da nginx.
 
-L'idea di arrivo, allineata alla gallery: un solo branch `main`, l'ambiente
-scelto da una variabile Ansible (`main` su dev, un tag su produzione). Il tema è
-statico, quindi non c'è niente da costruire: Ansible clona il repo, ne fa
-`rsync` nella directory dello style escludendo quanto elencato in
-`.deployignore`, e poi la butta via — così la `.git` non entra mai nella
-directory servita da nginx.
+**Ogni versione pubblicata vive in una directory sua**
+(`styles/progettodighe-<versione>/`) e resta accanto alle precedenti, tutte
+attive. È il motivo per cui `name` e `style_version` in `style.cfg` li riscrive
+il deploy: phpBB tratta `style_name` come unico, e due versioni affiancate non
+possono chiamarsi allo stesso modo. Serve a provare una versione nuova su un
+singolo utente, in produzione, mentre gli altri vedono quella di prima.
+
+I comandi di rilascio e di rientro stanno in
+`progettodighe-server/TEMA-FORUM-RILASCIO-E-RIENTRO.md`. Da qui serve solo il
+tag, annotato, il cui messaggio dichiara su quali versioni di phpBB il commit è
+stato provato — è ciò che rende leggibile `git tag -n99`:
+
+```sh
+git tag -a 26.08 -m "Cosa cambia.
+
+Verificato su dev (phpBB 3.3.10, PHP 8.3): suite NN/NN."
+git push origin 26.08
+```
+
+Il push non è facoltativo: Ansible clona dal remoto.
 
 Dopo aver pubblicato su dev, i test contro il sito vero:
 
