@@ -106,7 +106,7 @@ calcola il deploy. **Qui non c'è nessun numero da alzare**: i valori in
 com'è.
 
 I comandi di rilascio e di rientro stanno in
-`progettodighe-server/TEMA-FORUM-RILASCIO-E-RIENTRO.md`. Da qui serve solo il
+`progettodighe-server/RILASCIO-TEMI.md`. Da qui serve solo il
 tag, annotato, che dice quale commit va in produzione e nel messaggio dichiara
 su quali versioni di phpBB è stato provato — è ciò che rende leggibile
 `git tag -n99`:
