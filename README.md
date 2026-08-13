@@ -100,10 +100,16 @@ il deploy: phpBB tratta `style_name` come unico, e due versioni affiancate non
 possono chiamarsi allo stesso modo. Serve a provare una versione nuova su un
 singolo utente, in produzione, mentre gli altri vedono quella di prima.
 
+La versione è `AA.MM.<hash breve>` — mese di pubblicazione e commit — e la
+calcola il deploy. **Qui non c'è nessun numero da alzare**: i valori in
+`style.cfg` restano quelli dell'ambiente di test locale, che pubblica il repo
+com'è.
+
 I comandi di rilascio e di rientro stanno in
 `progettodighe-server/TEMA-FORUM-RILASCIO-E-RIENTRO.md`. Da qui serve solo il
-tag, annotato, il cui messaggio dichiara su quali versioni di phpBB il commit è
-stato provato — è ciò che rende leggibile `git tag -n99`:
+tag, annotato, che dice quale commit va in produzione e nel messaggio dichiara
+su quali versioni di phpBB è stato provato — è ciò che rende leggibile
+`git tag -n99`:
 
 ```sh
 git tag -a 26.08 -m "Cosa cambia.
