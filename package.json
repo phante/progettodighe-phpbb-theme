@@ -8,8 +8,8 @@
     "env:up": "podman-compose -f test/compose.yml up --build -d && test/bin/install.sh",
     "env:down": "podman-compose -f test/compose.yml down -v",
     "test:e2e": "playwright test",
-    "test:e2e:dev": "PD_BASE_URL=https://dev.progettodighe.it/forum playwright test",
-    "test:e2e:prod": "PD_BASE_URL=https://www.progettodighe.it/forum playwright test",
+    "test:e2e:dev": "PD_BASE_URL=https://dev.progettodighe.it/forum PD_SITE_HOME=https://dev.progettodighe.it PD_FORUM=12 playwright test",
+    "test:e2e:prod": "PD_BASE_URL=https://www.progettodighe.it/forum PD_SITE_HOME=https://progettodighe.it PD_FORUM=12 playwright test",
     "test:matrix": "test/bin/matrix.sh"
   },
   "devDependencies": {
